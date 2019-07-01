@@ -3,7 +3,7 @@ from flask_pymongo import PyMongo
 
 from app import mongo
 
-honeypot = Blueprint('info', __name__)
+honeypotRoutes = Blueprint('info', __name__)
 
 '''
     For now, these are only applicable for cowrie instances:
@@ -13,20 +13,20 @@ honeypot = Blueprint('info', __name__)
         Pull IoC's (e.g. domains/IPs) from urls field and create a feed (out of scope of dissertation))
 '''
 
-@honeypot.route('/honeypot/sessions')
+@honeypotRoutes.route('/honeypot/sessions')
 def getAllHoneypotSessions():
     '''returns all sessions for all sensors'''
     return jsonify({'success': True, 'response': 'get_events function'}), 200
 
 
-@honeypot.route('/honeypot/sessions/<ident>')
+@honeypotRoutes.route('/honeypot/sessions/<ident>')
 def getHoneypotEvents(ident):
     '''returns all sessions for a sensor'''
     return jsonify({'success': True, 'response': 'get_events function'}), 200
 
 
 # @TODO: Replace cowrie in address with a generalized parameter to query different honeypots
-@honeypot.route('/honeypot/sessions/cowrie', methods=['GET'])
+@honeypotRoutes.route('/honeypot/sessions/cowrie', methods=['GET'])
 def getHoneypotSessions():
     '''returns all sessions for a honeypot type e.g. cowrie'''
     try:
@@ -37,7 +37,7 @@ def getHoneypotSessions():
 
 
 # @TODO: Replace cowrie in address with a generalized parameter to query different honeypots
-@honeypot.route('/honeypot/sessions/cowrie/logins', methods=['GET'])
+@honeypotRoutes.route('/honeypot/sessions/cowrie/logins', methods=['GET'])
 def getHoneypotLogins():
     '''returns all sessions where there was a successful login'''
     try:
@@ -48,7 +48,7 @@ def getHoneypotLogins():
 
 
 # @TODO: Replace cowrie in address with a generalized parameter to query different honeypots
-@honeypot.route('/honeypot/sensor/cowrie', methods=['GET'])
+@honeypotRoutes.route('/honeypot/sensor/cowrie', methods=['GET'])
 def getHoneypotSensors():
     '''returns the idents of all registered sensors of a given honeypot type'''
     try:
@@ -59,7 +59,7 @@ def getHoneypotSensors():
 
 
 # @TODO: Replace cowrie in address with a generalized parameter to query different honeypots
-@honeypot.route('/honeypot/sensor/<ident>', methods=['GET'])
+@honeypotRoutes.route('/honeypot/sensor/<ident>', methods=['GET'])
 def getHoneypotSensor(ident):
     '''returns all sessions associated with an individual honeypot sensor e.g cowrie with ident=ident
         the ident parameter is contained within '''
