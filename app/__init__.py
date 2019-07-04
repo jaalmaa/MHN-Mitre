@@ -9,9 +9,10 @@ api.config['SECRET_KEY'] = '<CHANGETHIS>'                                       
 mongo = PyMongo(api)
 api.json_encoder = JSONEncoder
 
-from app.views import honeypot
-api.register_blueprint(honeypot)
-
+from app.views import honeypotRoutes
+from app.mitre import mitreRoutes
+api.register_blueprint(honeypotRoutes)
+api.register_blueprint(mitreRoutes)
 
 @api.route('/')
 def home():
