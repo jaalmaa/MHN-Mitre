@@ -44,7 +44,36 @@ def getHoneypotLogins():
         data = [resource for resource in mongo.db.hpfeed.find({ 'payload.commands': { '$ne': [] } }, { '_id': 0 })]
     except:
         return jsonify({ 'success': False, 'response': 'An Error Occurred Communicating with the Database' }), 500
-    return jsonify({ 'success': True, 'response': data }), 200
+    try:
+        formattedResponses = []
+        for session in data:
+            formattedResponse = {
+                "metadata": {
+                    "session": session['payload']['session'],
+                    "channel": session['channel'],
+                    "sensor-uuid": session['ident'],
+                    "protocol": session['payload']['protocol'],
+                    "timestamps": {
+                        "startTime": session['payload']['startTime'],
+                        "endTime": session['timestamp']
+                    }
+                },
+                "payload": {
+                    "commands": list(filter(None, session['payload']['commands'])),
+                    "credentials": {
+                        "username": session['payload']['loggedin'][0],
+                        "password": session['payload']['loggedin'][1]
+                    },
+                    "IOCs": {
+                        "urls": session['payload']['urls'],
+                        "hashes": session['payload']['hashes']
+                    }
+                }
+            }
+            formattedResponses.append(formattedResponse)
+        return jsonify({ 'success': True, 'response': formattedResponses }), 200
+    except:
+        return jsonify({ 'success': False, 'response': 'An Error Occurred Retuning the Data' }), 500
 
 
 # @TODO: Replace cowrie in address with a generalized parameter to query different honeypots
