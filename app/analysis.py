@@ -22,6 +22,7 @@ def prettyPrintAnalysis(analysis: list):
     for element in analysis:
         if element['techniques'] != []:
             print('Techniques Identified: {0}\nCommand Executed:\n{1}\n'.format(element['techniques'], element['command']))
+            print('\n----------------------------------------------------------------------------------------------------------------\n')
 
 @analysisRoutes.route('/analysis', methods=['GET'])
 def getAnalysis():
