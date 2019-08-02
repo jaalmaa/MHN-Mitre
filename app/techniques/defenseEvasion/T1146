@@ -1,0 +1,15 @@
+rule T1146_Clear_History
+{
+    meta: 
+        id          = "T1146"
+        technique   = "Clear History"
+        tactic      = "Defense Evasion"
+        url         = "https://attack.mitre.org/techniques/T1146/"
+    
+    strings:
+        $a          = "history -c"
+        $b          = "rm (-rf)? ~/.bash_history"
+
+    condition:
+        $a or $b
+}

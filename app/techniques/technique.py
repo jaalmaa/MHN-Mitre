@@ -1,21 +1,6 @@
-class Techniques(object):
-    '''generic template for MITRE ATT&CK techniques
-        These function very similarly to YARA rules by detecting strings
+import yara
 
-        In future, change the strings to regex to match commands instead of hard-coded commands
-    
-        requires a signature for technique behavior
-        of the following form:
-        {
-            'commands': [
-                {
-                    'command': <command>,
-                    'arguments': [<optional arguments>]
-                }
-            ],
-            'requirements': [requirements] (i.e. previous unsuccessful 
-                                            login if we're looking for brute force)
-        }'''
+class Techniques(object):
 
     def __init__(self):
         self.commands = {}
@@ -25,9 +10,9 @@ class Techniques(object):
         '''@TODO: validate indicators dictionary'''
         pass
     
-    def loadIndicator(self, indicators: dict):
+    def loadRules(self, files: dict):
         '''load a dictionary containing indicators for a MITRE ATT&CK Tactic'''
-        self.indicators.append(indicators)
+        return yara.compile(filepaths=files)
     
     def analyze(self, session: dict):
         import sys

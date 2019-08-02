@@ -5,30 +5,23 @@
 
 from flask import Flask, jsonify, Blueprint
 from flask_pymongo import PyMongo
+import os
 import requests
+import yara
+import sys
 
 from app import mongo
 from app.techniques.technique import Techniques
 
-from app.techniques.collection import *
-from app.techniques.commandAndControl import *
-from app.techniques.credentialAccess import *
-from app.techniques.defenseEvasion import T1146
-from app.techniques.discovery import *
-from app.techniques.execution import *
-from app.techniques.impact import *
-from app.techniques.initialAccess import *
-from app.techniques.lateralMovement import *
-from app.techniques.persistence import *
-from app.techniques.privilegeEscalation import *
-
-# initialize techniques object (stores indicators for analysis)
-# @TODO: Write a function to go through all imported packages from app.techniques and load the modules from each of the subpackages
-# This is fine for now as it is just a proof of concept, but any further development requires some serious refactoring 
 techniques = Techniques()
-techniques.loadIndicator(T1146.clearHistory)
+# TODO: more elegant way of listing all of the rule files and creating a dict
 
 analysisRoutes = Blueprint('analysis', __name__)
+
+def prettyPrintAnalysis(analysis: list):
+    for element in analysis:
+        if element['techniques'] != []:
+            print('Techniques Identified: {0}\nCommand Executed:\n{1}\n'.format(element['techniques'], element['command']))
 
 @analysisRoutes.route('/analysis', methods=['GET'])
 def getAnalysis():
@@ -40,10 +33,19 @@ def getAnalysis():
 @analysisRoutes.route('/analysis/cowrie', methods=['GET'])
 def getHoneypotAnalysis():
     '''returns analysis for a specific honeypot'''
+    rules = techniques.loadRules({
+    'T1070': os.path.abspath('app/techniques/defenseEvasion/T1070'),
+    'T1107': os.path.abspath('app/techniques/defenseEvasion/T1107'),
+    'T1139': os.path.abspath('app/techniques/defenseEvasion/T1139'),
+    'T1146': os.path.abspath('app/techniques/defenseEvasion/T1146'),
+    'T1148': os.path.abspath('app/techniques/defenseEvasion/T1148')
+    })
     sessions = requests.get('http://localhost:5000/honeypot/sessions/cowrie/logins').json()         # @TODO: Get from config && @TODO: Instead of request, use helper function to access the DB and get the correct format
-    analyzed_sessions = []
-    test_session = sessions['response'][6]
-    analysis = techniques.analyze(test_session)
-    analyzed_sessions.append(analysis)
+    analysis = []
+    for session in sessions['response']:
+        commands = [command for command in session['payload']['commands']]
+        for command in commands:
+            analysis.append({'command': command, 'techniques': rules.match(data=command)})
+    prettyPrintAnalysis(analysis)
 
-    return jsonify({ 'success': True, 'response': sessions })
+    return jsonify({ 'success': True, 'response': 'analysis complete' })

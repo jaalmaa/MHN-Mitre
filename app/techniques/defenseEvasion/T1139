@@ -1,0 +1,19 @@
+rule T1139_Bash_History
+{
+    meta:
+        id          = "T1139"
+        technique   = "Bash History"
+        tactic      = "Defense Evasion"
+        url         = "https://attack.mitre.org/techniques/T1139/"
+
+    strings:
+        $a          = "export HISTFILE"
+        $b          = "export HISTSIZE"
+        $c          = "export HISTFILESIZE"
+        $d          = "unset (HISTFILE|HISTORY|HISTZONE|HISTSAVE)"
+
+
+    condition:
+        $a or $b or $c or $d
+
+}

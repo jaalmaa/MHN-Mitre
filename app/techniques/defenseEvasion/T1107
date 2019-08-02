@@ -1,0 +1,14 @@
+rule T1107_File_Deletion
+{
+    meta:
+        id          = "T1107"
+        technique   = "File Deletion"
+        tactic      = "Defense Evasion"
+        url         = "https://attack.mitre.org/techniques/T1107/"
+    
+    strings:
+        $a          = "rm"
+
+    condition:
+        $a
+}

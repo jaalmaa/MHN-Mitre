@@ -1,0 +1,15 @@
+rule T1148_HISTCONTROL
+{
+    meta:
+        id          = "T1148"
+        technique   = "HISTCONTROL"
+        tactic      = "Defense Evasion"
+        url         = "https://attack.mitre.org/techniques/T1148/"
+
+    strings:
+        $a          = "echo \"HISTCONTROL=(IGNOREBOTH|IGNORESPACE)\" >> ~/.bashrc"
+
+
+    condition:
+        $a
+}

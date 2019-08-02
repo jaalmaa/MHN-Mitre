@@ -1,0 +1,14 @@
+rule T1070_Indicator_Removal_on_Host
+{
+    meta:
+        id          = "T1070"
+        technique   = "Indicator Removal on Host"
+        tactic      = "Defense Evasion"
+        url         = "https://attack.mitre.org/techniques/T1070/"
+
+    strings:
+        $a          = "rm"
+
+    condition:
+        $a
+}
