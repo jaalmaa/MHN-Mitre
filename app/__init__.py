@@ -10,9 +10,9 @@ mongo = PyMongo(api)
 api.json_encoder = JSONEncoder
 
 from app.views import honeypotRoutes
-from app.mitre import mitreRoutes
+from app.analysis import analysisRoutes
 api.register_blueprint(honeypotRoutes)
-api.register_blueprint(mitreRoutes)
+api.register_blueprint(analysisRoutes)
 
 @api.route('/')
 def home():
